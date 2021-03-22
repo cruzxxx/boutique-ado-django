@@ -14,13 +14,16 @@
     {% endblock %}
 
     {% block corecss %}
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet"> 
+        <link href="{% static 'css/base.css' %}" rel="stylesheet"> 
     {% endblock %}
 
     {% block extra_css %}
     {% endblock %}
 
     {% block corejs %}
+        <script src="https://kit.fontawesome.com/dcc5b6296f.js" crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
@@ -34,7 +37,7 @@
   </head>
   <body>
       <header class="container-fluid fixed-top">
-          <div class="row">
+          <div id="topnav" class="row bg-white pt-lg-2 d-none d-lg-flex">
               <div class="col-12 col-lg-4 my-auto py-1 py-lg-0 text-center text-lg-left">
                   <a href="{% url 'home' %}" class="nav-link main-logo-link">
                       <h2 class="logo-font text-black my-0"><strong>Boutique</strong> Ado</h2>
@@ -43,11 +46,11 @@
               <div class="col-12 col-lg-4 my-auto py-1 py-lg-0">
                 <form method="GET" action="">
                     <div class="input-group w-100">
-                        <input type="text" class="form-control border border-black rounded-0" name="q" placeholder="Search our side">
+                        <input type="text" class="form-control border border-black rounded-0" name="q" placeholder="Search our site">
                         <div class="input-group-append">
                             <button class="form-control btn btn-black border border-black rounded-0" type="submit">
                                 <span class="icon">
-                                    <i class="fas-fa-search"></i>
+                                    <i class="fas fa-search"></i>
                                 </span>
                             </button>                            
                         </div>
@@ -55,15 +58,15 @@
                 </form>
               </div>
               <div class="col-12 col-lg-4 my-auto py-1 py-lg-0">
-                <ul class="list-online list-unstyled text-center text-lg-right my-0">
+                <ul class="list-inline list-unstyled text-center text-lg-right my-0">
                     <li class="list-inline-item dropdown">
                         <a href="" class="text-black nav-link" id="user-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <div class="text-center">
-                                <div><i class="fas-fa-user fa-lg"></i></div>
+                                <div><i class="fas fa-user fa-lg"></i></div>
                                 <p class="my-0">My Account</p>
                             </div>
                         </a>
-                        <div class="dropwdown-menu border-0" aria-labelledby="user-options">
+                        <div class="dropdown-menu border-0" aria-labelledby="user-options">
                             {% if request.user.is_authenticated %}
                                 {% if request.user.is_superuser %}
                                     <a href="" class="dropdown-item">Product Management</a>
@@ -79,7 +82,7 @@
                     <li class="list-inline-item">
                         <a class="{% if grand_total %}text-info font-weight-bold{% else %}text-black{% endif %} nav-link" href="">
                             <div class="text-center">
-                                <div><i class="fas-fa-shopping-bag fa-lg"></i></div>
+                                <div><i class="fas fa-shopping-bag fa-lg"></i></div>
                                 <p class="my-0">
                                     {% if grand_total %}
                                         ${{ grand_total|floatformat:2}}
@@ -96,7 +99,7 @@
       </header>
 
         {% if messages %}
-        <div class="message-container">}</div>
+        <div class="message-container"></div>
         {% endif %}
 
         {% block page_header %}
