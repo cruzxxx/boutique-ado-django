@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib import messages
 from django.db.models import Q
-from .models import Product
+from .models import Product, Category
 
 # Create your views here.
 
@@ -12,8 +12,25 @@ def all_products(request):
     products = Product.objects.all()
     # initialising variable query
     query = None
+    categories = None
+
+    ''' The double underscore syntax
+    is common when making queries in django (e.g. category__name__in)
+    Using it here means we're looking for the name field of the category model.
+    And we're able to do this because category and
+    product are related with a foreign key.'''
 
     if request.GET:
+        # checking for category in get request (URL)
+        if 'category' in request.GET:
+            # store value of URL in the variable categories, remove comma
+            categories = request.GET['category'].split(',')
+            # search for products whose category name is in the list
+            products = products.filter(category__name__in=categories)
+            # display categories the user selected
+            categories = Category.objects.filter(name__in=categories)
+
+
         # if q is in the request, store it in a variable query
         if 'q' in request.GET:
             query = request.GET['q']
@@ -30,6 +47,7 @@ def all_products(request):
     context = {
         'products': products,
         'search_term': query,
+        'current_categories': categories,
     }
 
     return render(request, 'products/products.html', context)
