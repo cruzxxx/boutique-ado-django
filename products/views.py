@@ -13,6 +13,8 @@ def all_products(request):
     # initialising variable query
     query = None
     categories = None
+    sort = None
+    direction = None
 
     ''' The double underscore syntax
     is common when making queries in django (e.g. category__name__in)
@@ -21,6 +23,24 @@ def all_products(request):
     product are related with a foreign key.'''
 
     if request.GET:
+        if 'sort' in request.GET:
+            # store value of URL in the variable sortkey
+            sortkey = request.GET['sort']
+            # replace value of sort with value above
+            sort = sortkey
+            # allow case insensitive sort on the name field
+            if sortkey == 'name':
+                sortkey = 'lower_name'
+                products = products.annotate(lower_name=Lower('name'))
+
+
+            if 'direction' in request.GET:
+                direction = request.GET['direction']
+                if direction == 'desc':
+                    sortkey = f'-{sortkey}'
+            
+            products = products.order_by(sortkey)
+
         # checking for category in get request (URL)
         if 'category' in request.GET:
             # store value of URL in the variable categories, remove comma
@@ -44,10 +64,13 @@ def all_products(request):
             queries = Q(name__icontains=query) | Q(description__icontains=query)
             products = products.filter(queries)
 
+    current_sorting = f'{sort}_{direction}'
+
     context = {
         'products': products,
         'search_term': query,
         'current_categories': categories,
+        'current_sorting': current_sorting,
     }
 
     return render(request, 'products/products.html', context)
