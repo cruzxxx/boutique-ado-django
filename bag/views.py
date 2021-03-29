@@ -14,15 +14,33 @@ def add_to_bag(request, item_id):
 
     quantity = int(request.POST.get('quantity'))
     redirect_url = request.POST.get('redirect_url')
+    size = None
+
+    if 'product_size' in request.POST:
+        size = request.POST['product_size']
 
     # Once in the view, get the bag variable if exists or create it if it doesn't
     bag = request.session.get('bag', {})
 
-    # Add item to bag or update quantity if already exists
-    if item_id in list(bag.keys()):
-        bag[item_id] += quantity
+    # if there is size in the item added to bag
+    if size:
+        # if item is already in the bag
+        if item_id in list(bag.keys()):
+            # if item of same ID and size already exists in the bag, increment quantity
+            if size in bag[item_id]['items_by_size'].keys():
+                bag[item_id]['items_by_size'][size] += quantity
+            else:
+                bag[item_id]['items_by_size'][size] = quantity
+        else:
+            bag[item_id] = {'items_by_size': {size: quantity}}
+
+    # if there is no size in the item added to bag
     else:
-        bag[item_id] = quantity
+        # Add item to bag or update quantity if already exists
+        if item_id in list(bag.keys()):
+            bag[item_id] += quantity
+        else:
+            bag[item_id] = quantity
 
     # overwrite variable in the session with the updated version
     request.session['bag'] = bag
