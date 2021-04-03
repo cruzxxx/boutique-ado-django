@@ -43,9 +43,10 @@ From the OrderLineItem model.
 
 
 @receiver(post_delete, sender=OrderLineItem)
-def update_on_save(sender, instance, **kwargs):
+def update_on_delete(sender, instance, **kwargs):
     """
     Update order total on lineitem delete
     """
+    print('delete signal received')
     instance.order.update_total()
 
